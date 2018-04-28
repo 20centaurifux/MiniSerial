@@ -26,6 +26,7 @@
 #include <stdbool.h>
 #include <termios.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 /**
    @struct SerialPort
