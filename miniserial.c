@@ -186,13 +186,13 @@ serial_port_set_modes(SerialPort *port, int cflag, int iflag, int oflag, int lfl
 }
 
 void
-serial_port_set_special_char(SerialPort *port, int id, int value)
+serial_port_set_special_char(SerialPort *port, int index, int value)
 {
 	assert(port != NULL);
 
 	if(port)
 	{
-		port->settings.c_cc[id] = value;
+		port->settings.c_cc[index] = value;
 	}
 }
 

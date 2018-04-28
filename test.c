@@ -23,7 +23,6 @@ main(int argc, char *argv[])
 
 	serial_port_get_modes(port, &cflag, &iflag, &oflag, &lflag);
 
-	cflag &= ~CRTSCTS;    
 	cflag |= (CLOCAL | CREAD);
 	iflag |= (IGNPAR | IGNCR);
 	iflag &= ~(IXON | IXOFF | IXANY);

@@ -121,12 +121,12 @@ void serial_port_set_modes(SerialPort *port, int cflag, int iflag, int oflag, in
 
 /**
  * @param port SerialPort instance
- * @param id character id
+ * @param index index of the character
  * @param value value to set
  *
  * Defines a special character.
  */
-void serial_port_set_special_char(SerialPort *port, int id, int value);
+void serial_port_set_special_char(SerialPort *port, int index, int value);
 
 /**
  * @param port SerialPort instance
