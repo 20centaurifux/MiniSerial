@@ -2,7 +2,9 @@ CC?=gcc
 CFLAGS?=-Wall -std=gnu99 -fPIC -O2 -nostartfiles -shared
 
 all:
-	$(CC) ./miniserial.c -o ./miniserial.so $(CFLAGS)
+	dotnet build -c Release
+	$(CC) $(CFLAGS) ./miniserial.c -o ./bin/Release/netcoreapp2.0/miniserial.so
 
 clean:
-	rm ./miniserial.so
+	dotnet clean -c Release
+	rm -f ./bin/Release/netcoreapp2.0/miniserial.so
