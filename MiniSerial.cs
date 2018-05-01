@@ -14,13 +14,21 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
     Lesser General Public License for more details.
  ***************************************************************************/
-
+/**
+   @file MiniSerial.cs
+   @brief .NET termios wrapper.
+   @author Sebastian Fedrau <sebastian.fedrau@gmail.com>
+ */
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
 namespace MiniSerial
 {
+	/**
+	   @class Port
+	   @brief Serial port access with termios.
+	 */
 	public class Port : IDisposable
 	{
 		[DllImport("miniserial.so")]
@@ -59,25 +67,46 @@ namespace MiniSerial
 		private IntPtr _port;
 		private int _speed = Bits.B9600;
 
+		/*! Open device read-only. */
 		public const int O_RDONLY = 0;
+		/*! Open device write-only. */
 		public const int O_WRONLY = 1;
+		/*! Open device with read & write permissions. */
 		public const int O_RDWR = 2;
+		/*! Don't let terminal device become the process's controlling terminal. */
 		public const int O_NOCTTY = 256;
+		/*! Fulfill requirements of synchronized I/O file integrity completion  */
 		public const int O_SYNC = 1052672;
 
+		/**
+		   @enum Flag
+		   @brief Available flags.
+		 */
 		public enum Flag
 		{
+			/*! Input flag. */
 			Input,
+			/*! Output flag. */
 			Output,
+			/*! Control flag. */
 			Control,
+			/*! Local flag. */
 			Local
 		}
 
+		/**
+		   @param filename path to serial device
+		   @param flags file open flags
+		   @param flushDelay milliseconds to sleep after flush
+
+		   Initializes a new Port instance.
+		 */
 		public Port(string filename, int flags, UInt32 flushDelay)
 		{
 			_port = serial_port_new(filename, flags, flushDelay);
 		}
 
+		/*! Opens the serial device connection. */
 		public void Open()
 		{
 			if(!serial_port_open(_port))
@@ -86,11 +115,13 @@ namespace MiniSerial
 			}
 		}
 
+		/*! Closes the serial device connection. */
 		public void Close()
 		{
 			serial_port_close(_port);
 		}
 
+		/*! Sets input and output speed. */
 		public int Speed
 		{
 			set
@@ -105,6 +136,12 @@ namespace MiniSerial
 			}
 		}
 
+		/**
+		   @param flag flag to receive
+		   @return a flag
+
+		   Returns the desired flag.
+		 */
 		public int GetFlag(Flag flag)
 		{
 			int value = 0;
@@ -133,6 +170,12 @@ namespace MiniSerial
 			return value;
 		}
 
+		/**
+		   @param flag flag to set
+		   @param value the new value for the specified flag
+
+		   Overwrites the specified flag.
+		 */
 		public void SetFlag(Flag flag, int value)
 		{
 			serial_port_get_modes(_port, out int cflag, out int iflag, out int oflag, out int lflag);
@@ -159,11 +202,22 @@ namespace MiniSerial
 			serial_port_set_modes(_port, cflag, iflag, oflag, lflag);
 		}
 
+		/**
+		   @param index index of the character to set
+		   @param value new value to set
+
+		   Sets a special terminal character.
+		 */
 		public void SetSpecialChar(int index, int value)
 		{
 			serial_port_set_special_char(_port, index, value);
 		}
 
+		/**
+		   @return read bytes
+
+		   Reads from the serial device.
+		 */
 		public byte[] Read()
 		{
 			byte[] bytes = new byte[512];
@@ -180,6 +234,13 @@ namespace MiniSerial
 			return bytes;
 		}
 
+		/**
+		   @param bytes bytes to write
+		   @param count number of bytes to write
+		   @return number of written bytes
+
+		   Writes to the serial device.
+		 */
 		public long Write(byte[] bytes, int count)
 		{
 			int written = serial_port_write(_port, bytes, count);
@@ -192,6 +253,13 @@ namespace MiniSerial
 			return written;
 		}
 
+		/**
+		   @param text text to write to the serial device
+		   @return number of written bytes
+
+		   Converts an UTF-8 encoded string to a byte array and sends it
+		   to the serial device.
+		 */
 		public long Write(string text)
 		{
 			var bytes = System.Text.Encoding.UTF8.GetBytes(text);
@@ -199,6 +267,9 @@ namespace MiniSerial
 			return Write(bytes, bytes.Length);
 		}
 
+		/**
+		   Flushes input and output buffers.
+		 */
 		public void Flush()
 		{
 			if(!serial_port_flush(_port))
@@ -207,6 +278,9 @@ namespace MiniSerial
 			}
 		}
 
+		/**
+		   Frees resources.
+		 */
 		public void Dispose()
 		{
 			serial_port_destroy(_port);

@@ -14,9 +14,18 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
     Lesser General Public License for more details.
  ***************************************************************************/
+/**
+   @file Bits.cs
+   @brief termios bitmasks.
+   @author Sebastian Fedrau <sebastian.fedrau@gmail.com>
+ */
 
 namespace MiniSerial
 {
+	/**
+	   @class Bits
+	   @brief Many bitmasks copied from /usr/include/bits/termios.h
+	 */
 	public static class Bits
 	{
 		public const int VINTR = 0;
