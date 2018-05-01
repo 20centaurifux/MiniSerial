@@ -64,6 +64,9 @@ namespace MiniSerial
 		[DllImport("miniserial.so")]
 		private static extern unsafe int serial_port_write(IntPtr port, byte[] buffer, int count);
 
+		[DllImport("miniserial.so")]
+		private static extern unsafe int serial_port_last_error(IntPtr port);
+
 		private IntPtr _port;
 		private int _speed = Bits.B9600;
 
@@ -111,7 +114,7 @@ namespace MiniSerial
 		{
 			if(!serial_port_open(_port))
 			{
-				throw new IOException();
+				throw new IOException(String.Format("Couldn't open device, error code {0}.", serial_port_last_error(_port)));
 			}
 		}
 
@@ -226,7 +229,7 @@ namespace MiniSerial
 
 			if(received < 0)
 			{
-				throw new IOException();
+				throw new IOException(String.Format("Couldn't read from device, error code {0}.", serial_port_last_error(_port)));
 			}
 
 			Array.Resize(ref bytes, received);
@@ -247,7 +250,7 @@ namespace MiniSerial
 
 			if(written < 0)
 			{
-				throw new IOException();
+				throw new IOException(String.Format("Couldn't write to device, error code {0}.", serial_port_last_error(_port)));
 			}
 
 			return written;
@@ -274,7 +277,7 @@ namespace MiniSerial
 		{
 			if(!serial_port_flush(_port))
 			{
-				throw new IOException();
+				throw new IOException(String.Format("Flush failed, error code {0}.", serial_port_last_error(_port)));
 			}
 		}
 

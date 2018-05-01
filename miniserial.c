@@ -239,3 +239,16 @@ serial_port_write(SerialPort *port, const char *buffer, size_t count)
 	return bytes;
 }
 
+int
+serial_port_last_error(SerialPort *port)
+{
+	assert(port != NULL);
+
+	if(port)
+	{
+		return port->errcode;
+	}
+
+	return 0;
+}
+

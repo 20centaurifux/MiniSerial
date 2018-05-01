@@ -156,5 +156,13 @@ ssize_t serial_port_read(SerialPort *port, char *buffer, size_t count);
  */
 ssize_t serial_port_write(SerialPort *port, const char *buffer, size_t count);
 
+/**
+   @param port SerialPort
+   @return error code
+
+   Gets the code of the last occured error.
+ */
+int serial_port_last_error(SerialPort *port);
+
 #endif
 
